@@ -5,67 +5,153 @@
   <title>KGP Connect - Home</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <style>
-    body { background-color: #f8f9fa; font-family: Arial, sans-serif; }
-    .navbar-custom { display: flex; justify-content: space-between; align-items: center; background-color: #007bff81; color: white; padding: 15px 30px; border-radius: 8px; margin-bottom: 30px; }
-    .navbar-custom:hover {background-color: #007bff; box-shadow: 0 0 64px #74b7ff; transition: 0.5s;}
-    .navbar-custom .center { font-weight: bold; font-size: 1.3rem; }
-    .btn-custom { background-color: rgba(255, 255, 255, 0.8); color: #007bff; border-radius: 20px; border: none; padding: 6px 16px; font-weight: bold; transition: 0.2s; }
-    .btn-custom:hover { background-color: #e2e6ea; color: #0056b3; box-shadow: 0 0 32px white;}
+    body {
+        background-image: url('/static/IITKGP.jpg');
+        background-size: cover;
+        background-attachment: fixed;
+        background-position: center;
+        min-height: 100vh;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    /* Navbar */
+    .navbar-custom { display: flex; justify-content: space-between; align-items: center; background-color: rgba(0, 123, 255, 0.9); backdrop-filter: blur(5px); color: white; padding: 15px 30px; border-radius: 0 0 12px 12px; margin-bottom: 30px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
+    .btn-custom { background-color: rgba(255, 255, 255, 0.9); color: #007bff; border-radius: 20px; border: none; padding: 6px 16px; font-weight: bold; transition: all 0.2s ease; text-decoration: none; }
+    .btn-custom:hover { background-color: #ffffff; transform: translateY(-2px); color: #0056b3; box-shadow: 0 2px 8px rgba(255,255,255,0.4); }
 
-    .modal { display: none; position: fixed; z-index: 1000; padding-top: 60px; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.5); }
-    .modal-content { background-color: #ffffff84; margin: auto; padding: 20px; border-radius: 12px; width: 90%; max-width: 600px; box-shadow: 0 5px 15px rgba(0,0,0,0.3); position: relative; }
-    #close { position: absolute; right: 15px; top: 10px; font-size: 28px; font-weight: bold; cursor: pointer; color: #888; }
-    #close:hover { color: #000; }
-
-    .interests-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 8px; margin-top: 10px; margin-bottom: 15px; }
-    .interest-box { background: #f1f3f46d; border-radius: 8px; padding: 6px 8px; transition: 0.2s; font-size: 14px; cursor: pointer; text-align: center; }
-    .interest-box.selected { background: #007bff; color: white; }
-
-    .interest-tags { margin-top: 15px; }
-    .interest-tags span { display: inline-block; background-color: #007bff; color: white; padding: 5px 10px; border-radius: 15px; margin: 3px 3px 3px 0; font-size: 0.85rem; }
-
-    #save-interests { margin-top: 10px; }
+    /* Cards & Tabs */
+    .card { border: none; border-radius: 12px; background-color: #fff; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+    .post-card { margin-bottom: 15px; }
+    .nav-tabs .nav-link { border: none; color: #fff; font-weight: 600; background-color: rgba(0,0,0,0.2); margin-right: 5px; border-radius: 8px 8px 0 0; }
+    .nav-tabs .nav-link.active { background-color: #fff; color: #007bff; }
+    .post-time { font-size: 0.85rem; color: #6c757d; }
+    .interest-tags span { display: inline-block; background-color: #e7f1ff; color: #007bff; padding: 5px 10px; border-radius: 15px; margin: 3px; font-size: 0.85rem; font-weight: 600; }
   </style>
 </head>
-<body style="background-image: url(/static/IITKGP.jpg); background-size: cover;">
-  <div class="navbar-custom">
-    <div class="left">Hi, {{ user.name }}</div>
-    <div class="center">Welcome to <b>KGP Connect</b></div>
+<body>
+
+  <div class="navbar-custom sticky-top">
+    <div class="left d-flex align-items-center">
+      <span class="me-2">Hi,</span> <span class="fw-bold">{{ user.name }}</span>
+    </div>
+    <div class="center">KGP Connect</div>
     <div class="right">
-      <button id="interest-btn" class="btn-custom">My Interests</button>
-      <a href="/logout" class="btn btn-danger btn-sm ms-2">Logout</a>
+      <a href="/profile/{{ user.id }}" class="btn-custom me-2">My Profile</a>
+      <a href="/logout" class="btn btn-danger btn-sm rounded-pill px-3">Logout</a>
     </div>
   </div>
 
   <div class="container">
     <div class="row">
-      <div class="col-md-8">
-        <div class="card shadow mb-3">
-          <div class="card-body">
-            <h5 class="card-title">Your Feed</h5>
-            <p class="card-text">This is where posts or updates from your friends will appear.</p>
+      <div class="col-lg-8 mb-4">
+        <div class="card mb-4">
+          <div class="card-body d-flex justify-content-between align-items-center">
+            <div>
+                <h5 class="fw-bold text-primary mb-1">Grow Network</h5>
+                <p class="card-text text-muted mb-0 small">Find peers with similar interests.</p>
+            </div>
+            <div>
+              <a href="/users" class="btn btn-success rounded-pill btn-sm fw-bold me-2">Find Users</a>
+              <a href="/search" class="btn btn-outline-primary rounded-pill btn-sm fw-bold">Search Interests</a>
+            </div>
           </div>
         </div>
 
-        <div class="card shadow mb-3">
-          <div class="card-body">
-            <h5 class="card-title">Connect with Others</h5>
-            <p class="card-text">Find other students on the platform and start a conversation.</p>
-            <a href="/users" class="btn btn-success me-2">Find Users</a>
-            <a href="/search" class="btn btn-primary">Search by Interests</a>
-          </div>
+        <div class="card mb-4">
+            <div class="card-body">
+                <form action="/create_post" method="post">
+                    <div class="mb-2">
+                        <textarea name="content" class="form-control border-0 bg-light" rows="2" placeholder="What's on your mind?" style="resize: none;" required></textarea>
+                    </div>
+                    <div class="d-flex justify-content-end">
+                        <button type="submit" class="btn btn-primary rounded-pill px-4 fw-bold">Post</button>
+                    </div>
+                </form>
+            </div>
         </div>
-        
-      <div class="col-md-4">
-        <div class="card shadow mb-3">
+
+        <ul class="nav nav-tabs mb-3" id="feedTabs" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="campus-tab" data-bs-toggle="tab" data-bs-target="#campus-feed" type="button" role="tab">🌍 Campus Feed</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="my-posts-tab" data-bs-toggle="tab" data-bs-target="#my-feed" type="button" role="tab">👤 My Posts</button>
+            </li>
+        </ul>
+
+        <div class="tab-content" id="feedTabsContent">
+            <div class="tab-pane fade show active" id="campus-feed" role="tabpanel">
+                {% for post in posts %}
+                <div class="card post-card">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <a href="/profile/{{ post.user.id }}" class="text-decoration-none text-dark fw-bold">{{ post.user.name }}</a>
+                            <small class="post-time">{{ post.timestamp.strftime('%d %b, %H:%M') }}</small>
+                        </div>
+                        <p class="card-text mb-0">{{ post.content }}</p>
+                    </div>
+                </div>
+                {% else %}
+                <div class="card"><div class="card-body text-center text-muted py-4">No posts yet.</div></div>
+                {% endfor %}
+            </div>
+
+            <div class="tab-pane fade" id="my-feed" role="tabpanel">
+                {% set ns = namespace(found=false) %}
+                {% for post in posts %}
+                    {% if post.user_id|int == user.id|int %}
+                        {% set ns.found = true %}
+                        <div class="card post-card border-primary">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <span class="fw-bold text-primary">You</span>
+                                    <small class="post-time">{{ post.timestamp.strftime('%d %b, %H:%M') }}</small>
+                                </div>
+                                <p class="card-text mb-0">{{ post.content }}</p>
+                            </div>
+                        </div>
+                    {% endif %}
+                {% endfor %}
+                {% if not ns.found %}
+                <div class="card"><div class="card-body text-center text-muted py-4">No personal posts yet.</div></div>
+                {% endif %}
+            </div>
+        </div>
+      </div>
+
+      <div class="col-lg-4">
+        <div class="card mb-4">
           <div class="card-body">
-            <h5 class="card-title">Quick Interests</h5>
+            <h6 class="fw-bold mb-3 text-muted">YOUR INTERESTS</h6>
             <div class="interest-tags">
               {% set selected_interests = user.interests.split(',')|map('trim')|list if user.interests else [] %}
               {% for interest in selected_interests %}
-                {% if interest %}
-                  <span>{{ interest }}</span>
-                {% endif %}
+                {% if interest %}<span>{{ interest }}</span>{% endif %}
+              {% else %}
+                  <p class="text-muted small">No interests added.</p>
+              {% endfor %}
+            </div>
+          </div>
+        </div>
+
+        <div class="card shadow-sm sticky-top" style="top: 100px; z-index: 1;">
+          <div class="card-body">
+            <h6 class="fw-bold mb-3 text-primary">PEOPLE YOU MAY KNOW</h6>
+            <div class="list-group list-group-flush" style="max-height: 400px; overflow-y: auto;">
+              {% for rec_user in recommendations %}
+              <div class="list-group-item px-0 d-flex align-items-center justify-content-between border-0 mb-2 me-2">
+                <div class="d-flex align-items-center">
+                    <a href="/profile/{{ rec_user.id }}" class="text-decoration-none">
+                        <div class="bg-secondary rounded-circle d-flex justify-content-center align-items-center me-2 text-white fw-bold" style="width: 38px; height: 38px; font-size: 14px;">{{ rec_user.name[0] | upper }}</div>
+                    </a>
+                    <div>
+                        <a href="/profile/{{ rec_user.id }}" class="text-decoration-none text-dark"><h6 class="mb-0 fw-bold" style="font-size: 0.9rem;">{{ rec_user.name }}</h6></a>
+                        <small class="text-muted" style="font-size: 0.75rem;">{{ rec_user.department }}</small>
+                    </div>
+                </div>
+                <a href="/profile/{{ rec_user.id }}" class="btn btn-sm btn-outline-primary rounded-pill px-3 fw-bold" style="font-size: 0.75rem;">View</a>
+              </div>
+              {% else %}
+              <p class="text-muted small fst-italic text-center py-3">No recommendations yet.</p>
               {% endfor %}
             </div>
           </div>
@@ -74,64 +160,6 @@
     </div>
   </div>
 
-  <div id="interest-modal" class="modal">
-    <div class="modal-content">
-      <span id="close">&times;</span>
-      <h4>Select Your Interests</h4>
-      <div class="interests-container">
-        {% set all_interests = [
-          "Watching Movies","Watching Anime","Playing Cricket","Playing Football","Playing Tennis",
-          "Gym & Fitness","Running / Jogging","Badminton","Cycling","Hiking / Trekking",
-          "Gaming","Reading Books","Writing","Music Listening","Singing / Instrument",
-          "Dancing","Photography","Art & Design","Cooking / Baking","Volunteering",
-          "Tech / Coding","AI & ML","Data Science","Startups","Finance & Investing",
-          "Philosophy","Meditation / Yoga","Debating","Movies Discussion","Carrom / Chess"
-        ] %}
-        {% set selected_interests = user.interests.split(',')|map('trim')|list if user.interests else [] %}
-        {% for interest in all_interests %}
-          <div class="interest-box {% if interest in selected_interests %}selected{% endif %}" data-interest="{{ interest }}">{{ interest }}</div>
-        {% endfor %}
-      </div>
-      <button id="save-interests" class="btn btn-primary w-100">Save</button>
-    </div>
-  </div>
-
-  <script>
-    const modal = document.getElementById('interest-modal');
-    const btn = document.getElementById('interest-btn');
-    const span = document.getElementById('close');
-    btn.onclick = () => modal.style.display = 'block';
-    span.onclick = () => modal.style.display = 'none';
-    window.onclick = e => { if (e.target == modal) modal.style.display = 'none'; }
-
-    const interestBoxes = document.querySelectorAll('.interest-box');
-    interestBoxes.forEach(box => {
-      box.addEventListener('click', () => {
-        box.classList.toggle('selected');
-      });
-    });
-
-    document.getElementById('save-interests').addEventListener('click', () => {
-      const selected = [];
-      interestBoxes.forEach(box => {
-        if (box.classList.contains('selected')) {
-          selected.push(box.dataset.interest);
-        }
-      });
-
-      fetch('/update_interests', {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({interests: selected}),
-        credentials: 'same-origin' // Important: sends cookies with the request
-      }).then(response => {
-        if (response.ok) {
-            window.location.reload();
-        } else {
-            alert("Failed to save interests.");
-        }
-      });
-    });
-  </script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
