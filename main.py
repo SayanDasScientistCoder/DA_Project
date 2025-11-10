@@ -160,7 +160,7 @@ async def logout(session_token: str = Cookie(None), db: Session = Depends(get_db
     response.delete_cookie("session_token")
     return response
 
-#Added for updating profiles and changing password.
+#Added by Utkarsh for updating profiles and changing password.
 @app.post("/update_profile")
 async def update_profile(
     name: str = Form(...),
@@ -177,7 +177,7 @@ async def update_profile(
     # Redirect back to their own profile page
     return RedirectResponse(url=f"/profile/{user.id}", status_code=303)
 
-# Optional: Simple password change (you can expand this with validation later)
+#Simple password change (you can expand this with validation later)
 @app.post("/change_password")
 async def change_password(
     new_password: str = Form(...),
@@ -224,22 +224,49 @@ async def get_users_list(request: Request, session_token: str = Cookie(None), db
     return templates.TemplateResponse("users.html", {"request": request, "users": all_users})
 
 @app.get("/search", response_class=HTMLResponse)
-async def search_users(request: Request, q: str = "", session_token: str = Cookie(None), db: Session = Depends(get_db)):
-    """Search for users by name or interest."""
+async def search_users(
+    request: Request,
+    q: str = "",
+    session_token: str = Cookie(None),
+    db: Session = Depends(get_db)
+):
+    """Smart search: finds matches and sorts them by interest similarity."""
     if not session_token: return RedirectResponse(url="/")
     current_user = db.query(User).filter(User.session_token == session_token).first()
     if not current_user: return RedirectResponse(url="/")
 
     results = []
     if q.strip():
-        results = db.query(User).filter(
+        # 1. Basic Search (Filter by name OR interest)
+        matches = db.query(User).filter(
             User.id != current_user.id,
-            or_(User.name.ilike(f"%{q}%"), User.interests.ilike(f"%{q}%"))
+            or_(
+                User.name.ilike(f"%{q}%"),
+                User.interests.ilike(f"%{q}%")
+            )
         ).all()
 
-    return templates.TemplateResponse("search.html", {
-        "request": request, "user": current_user, "query": q, "results": results
-    })
+        # 2. Smart Sort (Calculate similarity for matches only) - O(N)
+        scored_results = []
+        for user in matches:
+            score = calculate_jaccard_similarity(current_user.interests, user.interests)
+            scored_results.append((user, score))
+        
+        # 3. Sort by score descending
+        scored_results.sort(key=lambda x: x[1], reverse=True)
+        
+        # Unpack just the user objects for the template
+        results = [user for user, score in scored_results]
+
+    return templates.TemplateResponse(
+        "search.html",
+        {
+            "request": request,
+            "user": current_user,
+            "query": q,
+            "results": results
+        }
+    )
 
 @app.get("/profile", response_class=HTMLResponse)
 async def profile(request: Request, session_token: str = Cookie(None), db: Session = Depends(get_db)):
